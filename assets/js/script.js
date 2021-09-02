@@ -1,4 +1,4 @@
-class Producto {
+/*class Producto {
 
   constructor(nombre, categoria, memoria, precio) {
     this.nombre = nombre;
@@ -32,4 +32,4 @@ function mostrar(nombre, mercancia) {
 
 mostrar('RTX 3070', producto1);
 mostrar('SPECTRIX', producto2);
-mostrar('KINGSTON', producto3);
+mostrar('KINGSTON', producto3);*/
