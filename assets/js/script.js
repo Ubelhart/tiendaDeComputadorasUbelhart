@@ -108,7 +108,9 @@ function calcularTotal() {
 
 function finalizarCompra() {
   DOMbotonCarrito.onclick = () => {
-    carrito.pop();
+    for (let i = 0; (i = carrito.length); i--) {
+      carrito.pop();
+    }
     total = 0;
     DOMtotal.innerText = "$";
     DOMcarrito.innerHTML = "<h3>Su Compra se ha Completado Exitosamente</h3>";
