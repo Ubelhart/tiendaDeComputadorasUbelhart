@@ -19,6 +19,20 @@ body {
   flex-direction: column;
   align-items: center; }
 
+img {
+  width: 100%; }
+
+h1 {
+  font-size: 3.8rem;
+  color: #0d0d0d; }
+
+h2 {
+  font-size: 3.4rem;
+  text-align: center; }
+
+h3 {
+  font-size: 3rem; }
+
 header {
   background-color: #7ed923;
   width: 100%;
@@ -28,9 +42,6 @@ header {
   justify-content: space-around; }
   header a {
     text-decoration: none; }
-    header a h1 {
-      font-size: 3.8rem;
-      color: #0d0d0d; }
 
 main {
   background-color: #fff;
@@ -47,26 +58,10 @@ main {
     border: 1px solid #0d0d0d;
     width: 100%;
     padding: 1em; }
-    main section h2 {
-      font-size: 3.4rem;
-      text-align: center; }
-    main section .img-container img {
-      width: 100%; }
     main section .price {
       display: flex;
       justify-content: space-around;
       align-items: center; }
-      main section .price input {
-        color: #fff;
-        background-color: #7ed923;
-        padding: 0.5em;
-        border-radius: 0.5em;
-        border: none;
-        transition: 500ms; }
-        main section .price input:hover {
-          color: #0d0d0d;
-          background-color: #6bb91d;
-          transform: scale(1.1); }
   @media only screen and (min-width: 768px) {
     main {
       grid-template-columns: repeat(2, 1fr);
@@ -74,3 +69,35 @@ main {
   @media only screen and (min-width: 992px) {
     main {
       grid-template-columns: repeat(3, 1fr); } }
+
+aside {
+  background-color: #fff;
+  width: 80%;
+  margin: 1em;
+  padding: 2em;
+  border-radius: 1em;
+  display: grid;
+  row-gap: 2em; }
+  aside ul {
+    display: grid;
+    row-gap: 1em; }
+    aside ul section {
+      display: flex;
+      border: 1px solid #0d0d0d;
+      align-items: center; }
+      aside ul section h3 {
+        order: 1; }
+      aside ul section p {
+        order: 2; }
+
+.btn {
+  color: #fff;
+  background-color: #7ed923;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  border: none;
+  transition: 500ms; }
+  .btn:hover {
+    color: #0d0d0d;
+    background-color: #6bb91d;
+    transform: scale(1.1); }
