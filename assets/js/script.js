@@ -14,6 +14,7 @@ class Producto {
 
 let productos = [];
 let carrito = [];
+let carritoAgregado;
 let total = 0;
 let DOMitems = document.getElementById("items");
 let DOMbutton = document.getElementsByClassName("btn-agr");
@@ -70,6 +71,8 @@ productos.push(
   )
 );
 
+//Visualiza los productos en el HTML a partir de los objetos
+
 function dibujarProductos(productos) {
   for (let i = 0; i < productos.length; i++) {
     let section = document.createElement("section");
@@ -84,21 +87,36 @@ function dibujarProductos(productos) {
 
     items.appendChild(section);
   }
+  dibujarCarrito();
   agregarAlCarrito();
 }
 
-function dibujarCarrito() {
-  for (let i = 0; i < carrito.length; i++) {
-    let section = document.createElement("section");
-    section.innerHTML = `<h3> ${carrito[i].nombre}</h3>
-        <div>
-          <img src="${carrito[i].imagen}" alt="${carrito[i].categoria}">
-        </div>
-        <p>$${carrito[i].precio}</p>`;
+// Visualiza el carrito dinamicamente dependiendo de que elegiste
 
-    DOMcarrito.appendChild(section);
+function dibujarCarrito() {
+  carritoAgregado = JSON.parse(localStorage.getItem("carrito"));
+  if (carrito.length === 0 && carritoAgregado) {
+    for (let i = 0; i < carritoAgregado.length; i++) {
+      carrito.push(carritoAgregado[i]);
+    }
   }
+  if (carritoAgregado) {
+    for (let i = 0; i < carritoAgregado.length; i++) {
+      let section = document.createElement("section");
+      section.innerHTML = `<h3> ${carritoAgregado[i].nombre}</h3>
+            <div>
+              <img src="${carritoAgregado[i].imagen}" alt="${carritoAgregado[i].categoria}">
+            </div>
+            <p>$${carritoAgregado[i].precio}</p>`;
+
+      DOMcarrito.appendChild(section);
+    }
+  }
+  calcularTotal();
+  DOMtotal.innerText = "$" + total;
 }
+
+// Calcula es precio de todos los productos del carrito
 
 function calcularTotal() {
   for (let i = 0; i < carrito.length; i++) {
@@ -106,28 +124,40 @@ function calcularTotal() {
   }
 }
 
+// Finaliza la compra una vez apretado el boton Finalizar Compra
+
 function finalizarCompra() {
   DOMbotonCarrito.onclick = () => {
-    for (let i = 0; (i = carrito.length); i--) {
-      carrito.pop();
+    function vaciarCarrito(carrito) {
+      for (let i = 0; (i = carrito.length); i--) {
+        carrito.pop();
+      }
     }
-    total = 0;
-    DOMtotal.innerText = "$";
-    DOMcarrito.innerHTML = "<h3>Su Compra se ha Completado Exitosamente</h3>";
+    if (carritoAgregado) {
+      vaciarCarrito(carrito);
+      localStorage.clear();
+      vaciarCarrito(carritoAgregado);
+      total = 0;
+      DOMtotal.innerText = "$" + total;
+      DOMcarrito.innerHTML = "<h3>Su Compra se ha Completado Exitosamente</h3>";
+    }
   };
 }
+
+// Agrega los productos a otro array para mandarlo al local storage
 
 function agregarAlCarrito() {
   for (let i = 0; i < DOMbutton.length; i++) {
     DOMbutton[i].onclick = () => {
       carrito.push(productos[i]);
+      if (carrito.length > 0) {
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+      }
       DOMcarrito.textContent = " ";
       dibujarCarrito();
-      calcularTotal();
-      DOMtotal.innerText = "$" + total;
-      finalizarCompra();
     };
   }
+  finalizarCompra();
 }
 
 dibujarProductos(productos);
