@@ -112,6 +112,7 @@ function dibujarCarrito() {
       DOMcarrito.appendChild(section);
     }
   }
+  total = 0;
   calcularTotal();
   DOMtotal.innerText = "$" + total;
 }
@@ -138,6 +139,7 @@ function finalizarCompra() {
       localStorage.clear();
       vaciarCarrito(carritoAgregado);
       total = 0;
+      DOMtotal.innerText = "$" + total;
       DOMtotal.innerText = "$" + total;
       DOMcarrito.innerHTML = "<h3>Su Compra se ha Completado Exitosamente</h3>";
     }
