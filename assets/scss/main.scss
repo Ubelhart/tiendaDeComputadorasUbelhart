@@ -85,13 +85,12 @@ aside {
     row-gap: 1em;
     section {
       display: flex;
+      justify-content: space-around;
       border: 1px solid #0d0d0d;
       align-items: center;
-      h3 {
-        order: 1;
-      }
-      p {
-        order: 2;
+      div {
+        width: 40%;
+        text-align: center;
       }
     }
   }

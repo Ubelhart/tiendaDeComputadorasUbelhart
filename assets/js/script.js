@@ -1,10 +1,12 @@
 class Producto {
-  constructor(id, nombre, imagen, categoria, precio) {
+  constructor(id, nombre, imagen, cantidad, categoria, precio, precioUnidad) {
     this.id = id;
     this.nombre = nombre;
     this.imagen = imagen;
+    this.cantidad = cantidad;
     this.categoria = categoria;
     this.precio = precio;
+    this.precioUnidad = precioUnidad;
   }
 
   getPrecio() {
@@ -15,19 +17,16 @@ class Producto {
 let productos = [];
 let carrito = [];
 let carritoAgregado;
-let total = 0;
-let DOMitems = document.getElementById("items");
 let DOMbutton = document.getElementsByClassName("btn-agr");
-let DOMcarrito = document.getElementById("carrito");
-let DOMbotonCarrito = document.getElementById("btn-fin");
-let DOMtotal = document.getElementById("total");
 
 productos.push(
   new Producto(
     1,
     "RTX 3070",
     "./media/img/productoUno.webp",
+    1,
     "Tarjeta Gráfica",
+    312801,
     312801
   )
 );
@@ -36,19 +35,31 @@ productos.push(
     2,
     "SPECTRIX",
     "./media/img/productoDos.webp",
+    1,
     "Memoria Ram",
+    8124,
     8124
   )
 );
 productos.push(
-  new Producto(3, "KINGSTON", "./media/img/productoTres.webp", "SSD", 4289)
+  new Producto(
+    3,
+    "KINGSTON",
+    "./media/img/productoTres.webp",
+    1,
+    "SSD",
+    4289,
+    4289
+  )
 );
 productos.push(
   new Producto(
     4,
     "XIGMATEK",
     "./media/img/productoCuatro.webp",
+    1,
     "Gabinete",
+    15256,
     15256
   )
 );
@@ -57,7 +68,9 @@ productos.push(
     5,
     "i9-10850K",
     "./media/img/productoCinco.webp",
+    1,
     "Procesador",
+    59999,
     59999
   )
 );
@@ -66,7 +79,9 @@ productos.push(
     6,
     "ASUS ROG STRIX B550-F",
     "./media/img/productoSeis.webp",
-    "Gabinete",
+    1,
+    "Placa Madre",
+    28399,
     28399
   )
 );
@@ -74,21 +89,22 @@ productos.push(
 //Visualiza los productos en el HTML a partir de los objetos
 
 function dibujarProductos(productos) {
-  for (let i = 0; i < productos.length; i++) {
+  productos.forEach((element) => {
+    let { id, nombre, categoria, imagen, precio } = element;
     let section = document.createElement("section");
-    section.innerHTML = `<h2> ${productos[i].nombre}</h2>
-        <div>
-          <img src="${productos[i].imagen}" alt="${productos[i].categoria}">
-        </div>
-        <div class="price">
-          <input class="btn btn-agr" type="button" value="Agregar">
-          <p>$${productos[i].precio}</p>
-        </div>`;
+    section.innerHTML = `<h2> ${nombre}</h2>
+          <div>
+            <img src="${imagen}" alt="${categoria}">
+          </div>
+          <div class="price">
+            <input id="btn${id}" class="btn btn-agr" type="button" value="Agregar">
+            <p>$${precio}</p>
+          </div>`;
 
-    items.appendChild(section);
-  }
-  dibujarCarrito();
+    $("#items").append(section);
+  });
   agregarAlCarrito();
+  dibujarCarrito();
 }
 
 // Visualiza el carrito dinamicamente dependiendo de que elegiste
@@ -103,59 +119,71 @@ function dibujarCarrito() {
   if (carritoAgregado) {
     for (let i = 0; i < carritoAgregado.length; i++) {
       let section = document.createElement("section");
-      section.innerHTML = `<h3> ${carritoAgregado[i].nombre}</h3>
-            <div>
-              <img src="${carritoAgregado[i].imagen}" alt="${carritoAgregado[i].categoria}">
-            </div>
-            <p>$${carritoAgregado[i].precio}</p>`;
+      section.innerHTML = `<div>
+                                            <img src="${carritoAgregado[i].imagen}" alt="${carritoAgregado[i].categoria}">
+                                          </div>
+                                          <div>
+                                            <h3>${carritoAgregado[i].nombre}</h3>
+                                            <p>Cantidad: ${carritoAgregado[i].cantidad}</p>
+                                            <p>$${carritoAgregado[i].precio}</p>
+                                          </div>
+                                          `;
 
-      DOMcarrito.appendChild(section);
+      $("#carrito").append(section);
     }
   }
-  total = 0;
   calcularTotal();
-  DOMtotal.innerText = "$" + total;
 }
 
 // Calcula es precio de todos los productos del carrito
 
 function calcularTotal() {
   for (let i = 0; i < carrito.length; i++) {
+    let total = 0;
     total = total + carrito[i].precio;
+    $("#total").text("$" + total);
   }
 }
 
 // Finaliza la compra una vez apretado el boton Finalizar Compra
 
 function finalizarCompra() {
-  DOMbotonCarrito.onclick = () => {
-    function vaciarCarrito(carrito) {
-      for (let i = 0; (i = carrito.length); i--) {
-        carrito.pop();
-      }
-    }
+  $("#btn-fin").click(() => {
     if (carritoAgregado) {
-      vaciarCarrito(carrito);
       localStorage.clear();
-      vaciarCarrito(carritoAgregado);
-      total = 0;
-      DOMtotal.innerText = "$" + total;
-      DOMtotal.innerText = "$" + total;
-      DOMcarrito.innerHTML = "<h3>Su Compra se ha Completado Exitosamente</h3>";
+      $("#carrito").html("<h3>Su Compra se ha Completado Exitosamente</h3>");
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
     }
-  };
+  });
 }
 
 // Agrega los productos a otro array para mandarlo al local storage
 
 function agregarAlCarrito() {
-  for (let i = 0; i < DOMbutton.length; i++) {
+  for (let i = 0; i < $(".btn-agr").length; i++) {
     DOMbutton[i].onclick = () => {
-      carrito.push(productos[i]);
+      let existeProducto = carrito.some(
+        (element) => element.id === productos[i].id
+      );
+      if (existeProducto) {
+        carrito.map((element) => {
+          if (element.id === productos[i].id) {
+            element.cantidad++;
+            element.precio = element.precioUnidad * element.cantidad;
+            return element;
+          } else {
+            return element;
+          }
+        });
+      } else {
+        carrito.push(productos[i]);
+      }
       if (carrito.length > 0) {
         localStorage.setItem("carrito", JSON.stringify(carrito));
       }
-      DOMcarrito.textContent = " ";
+      $("#carrito").text(" ");
       dibujarCarrito();
     };
   }

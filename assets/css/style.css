@@ -83,12 +83,12 @@ aside {
     row-gap: 1em; }
     aside ul section {
       display: flex;
+      justify-content: space-around;
       border: 1px solid #0d0d0d;
       align-items: center; }
-      aside ul section h3 {
-        order: 1; }
-      aside ul section p {
-        order: 2; }
+      aside ul section div {
+        width: 40%;
+        text-align: center; }
 
 .btn {
   color: #fff;
