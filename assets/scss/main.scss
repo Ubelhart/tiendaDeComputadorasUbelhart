@@ -14,9 +14,6 @@ html {
 body {
   background-image: url(../../media/img/fondoPlaca.jpg);
   font-size: 1.6rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 img {
   width: 100%;
@@ -42,15 +39,22 @@ header {
   a {
     text-decoration: none;
   }
+  button {
+    background-color: inherit;
+    border: 0;
+    :hover {
+      cursor: pointer;
+    }
+  }
 }
 main {
   background-color: #fff;
+  margin: 1em auto;
   width: 80%;
   border-radius: 1em;
   display: grid;
   justify-items: center;
   row-gap: 3em;
-  margin: 1em;
   padding: 2em;
   section {
     display: grid;
@@ -74,12 +78,12 @@ main {
 }
 aside {
   background-color: #fff;
-  width: 80%;
-  margin: 1em;
+  width: 50%;
   padding: 2em;
-  border-radius: 1em;
-  display: grid;
-  row-gap: 2em;
+  display: none;
+  position: absolute;
+  top: 5em;
+  right: 0;
   ul {
     display: grid;
     row-gap: 1em;
@@ -93,6 +97,22 @@ aside {
         text-align: center;
       }
     }
+  }
+}
+
+.carta {
+  display: grid;
+  position: fixed;
+  right: 1em;
+  bottom: 1em;
+  width: 25%;
+  section {
+    background-color: white;
+    display: grid;
+    text-align: center;
+    width: 100%;
+    padding: 1em;
+    border-radius: 0.5em;
   }
 }
 
