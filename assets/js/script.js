@@ -1,11 +1,9 @@
 class Producto {
-  constructor(id, nombre, imagen, cantidad, categoria, precio, precioUnidad) {
+  constructor(id, nombre, imagen, categoria, precioUnidad) {
     this.id = id;
     this.nombre = nombre;
     this.imagen = imagen;
-    this.cantidad = cantidad;
     this.categoria = categoria;
-    this.precio = precio;
     this.precioUnidad = precioUnidad;
   }
 
@@ -23,9 +21,7 @@ productos.push(
     1,
     "RTX 3070",
     "./media/img/productoUno.webp",
-    1,
     "Tarjeta Gráfica",
-    312801,
     312801
   )
 );
@@ -34,31 +30,19 @@ productos.push(
     2,
     "SPECTRIX",
     "./media/img/productoDos.webp",
-    1,
     "Memoria Ram",
-    8124,
     8124
   )
 );
 productos.push(
-  new Producto(
-    3,
-    "KINGSTON",
-    "./media/img/productoTres.webp",
-    1,
-    "SSD",
-    4289,
-    4289
-  )
+  new Producto(3, "KINGSTON", "./media/img/productoTres.webp", "SSD", 4289)
 );
 productos.push(
   new Producto(
     4,
     "XIGMATEK",
     "./media/img/productoCuatro.webp",
-    1,
     "Gabinete",
-    15256,
     15256
   )
 );
@@ -67,9 +51,7 @@ productos.push(
     5,
     "i9-10850K",
     "./media/img/productoCinco.webp",
-    1,
     "Procesador",
-    59999,
     59999
   )
 );
@@ -78,9 +60,7 @@ productos.push(
     6,
     "ASUS ROG STRIX B550-F",
     "./media/img/productoSeis.webp",
-    1,
     "Placa Madre",
-    28399,
     28399
   )
 );
@@ -92,7 +72,7 @@ function dibujarProductos(productos) {
     carrito = JSON.parse(localStorage.getItem("carrito"));
   }
   productos.forEach((element) => {
-    let { id, nombre, categoria, imagen, precio } = element;
+    let { id, nombre, categoria, imagen, precioUnidad } = element;
     let section = document.createElement("section");
     section.innerHTML = `<h2> ${nombre}</h2>
           <div>
@@ -100,23 +80,23 @@ function dibujarProductos(productos) {
           </div>
           <div class="price">
             <input id="${id}" class="btn btn-agr" type="button" value="Agregar">
-            <p>$${precio}</p>
+            <p>$${precioUnidad}</p>
           </div>`;
 
     $("#items").append(section);
   });
-  if (carrito.length > 0) {
-    dibujarCarrito();
-  }
 }
 
-// Visualiza el carrito dinamicamente dependiendo de que elegiste
+$(document).ready(function () {
+  // Visualiza el carrito dinamicamente dependiendo de que elegiste
 
-function dibujarCarrito() {
-  carrito.forEach((producto) => {
-    let section = document.createElement("section");
-    let { imagen, categoria, nombre, cantidad, precio } = producto;
-    section.innerHTML = `<div>
+  function dibujarCarrito() {
+    let carritoHTML = $("#carrito");
+    carritoHTML.html("");
+    carrito.forEach((producto) => {
+      let section = document.createElement("section");
+      let { imagen, categoria, nombre, cantidad, precio } = producto;
+      section.innerHTML = `<div>
                                           <img src="${imagen}" alt="${categoria}">
                                         </div>
                                         <div>
@@ -126,15 +106,17 @@ function dibujarCarrito() {
                                         </div>
                                         `;
 
-    $("#carrito").append(section);
-  });
-  calcularTotal();
-}
+      carritoHTML.append(section);
+    });
+    calcularTotal();
+  }
 
-function dibujarTarjeta(idProducto) {
-  let section = document.createElement("section");
-  let producto = productos.find((producto) => producto.id === idProducto);
-  section.innerHTML = `<p>HAS AGREGADO</p>
+  // Visualiza una tarjeta del producto
+
+  function dibujarTarjeta(idProducto) {
+    let section = document.createElement("section");
+    let producto = productos.find((producto) => producto.id === idProducto);
+    section.innerHTML = `<p>HAS AGREGADO</p>
                                       <div>
                                         <img src="${producto.imagen}" alt="${producto.categoria}">
                                       </div>
@@ -144,81 +126,83 @@ function dibujarTarjeta(idProducto) {
                                       <p>AL CARRITO</p>
                                       </div>`;
 
-  $("#tarjeta")
-    .html(section)
-    .fadeIn("slow", function () {
-      setTimeout(() => {
-        $("#tarjeta").fadeOut();
-      }, 1000);
-    });
-}
-
-// Calcula es precio de todos los productos del carrito
-
-function calcularTotal() {
-  let total = 0;
-  for (let i = 0; i < carrito.length; i++) {
-    total = total + carrito[i].precio;
-    $("#total").text("$" + total);
+    $("#tarjeta")
+      .html(section)
+      .fadeIn("slow", function () {
+        setTimeout(() => {
+          $("#tarjeta").fadeOut();
+        }, 1000);
+      });
   }
-}
 
-// Finaliza la compra una vez apretado el boton Finalizar Compra
+  // Agrega los productos a otro array para mandarlo al local storage
 
-function finalizarCompra() {
+  function agregarAlCarrito(idNuevoProducto) {
+    let existeProducto = carrito.find(
+      (element) => element.id === idNuevoProducto
+    );
+    if (existeProducto) {
+      carrito = carrito.map((element) => {
+        if (element.id === idNuevoProducto) {
+          element.cantidad = element.cantidad + 1;
+          element.precio = element.precioUnidad * element.cantidad;
+          return element;
+        }
+        return element;
+      });
+    } else {
+      let nuevoProducto = productos.find(
+        (element) => element.id === idNuevoProducto
+      );
+      nuevoProducto.cantidad = 1;
+      nuevoProducto.precio = nuevoProducto.precioUnidad;
+      carrito.push(nuevoProducto);
+    }
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    $("#carrito").text(" ");
+  }
+
+  // Calcula es precio de todos los productos del carrito
+
+  function calcularTotal() {
+    let total = 0;
+    for (let i = 0; i < carrito.length; i++) {
+      total = total + carrito[i].precio;
+      $("#total").text("$" + total);
+    }
+  }
+
+  // Finaliza la compra una vez apretado el boton Finalizar Compra
+
   $("#btn-fin").click(() => {
-    if (carrito) {
+    if (carrito.length > 0) {
       localStorage.clear();
+      carrito = new Array();
       $("#carrito").html("<h3>Su Compra se ha Completado Exitosamente</h3>");
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
+      $("#total").text("$0");
     }
   });
-}
 
-// Agrega los productos a otro array para mandarlo al local storage
+  // Hace una animacion cuando apretas el carrito
 
-function agregarAlCarrito(idNuevoProducto) {
-  let existeProducto = carrito.some(
-    (element) => element.id === idNuevoProducto
-  );
-  if (existeProducto) {
-    carrito = carrito.map((element) => {
-      if (element.id === idNuevoProducto) {
-        element.cantidad++;
-        element.precio = element.precioUnidad * element.cantidad;
-        return element;
-      } else {
-        return element;
-      }
-    });
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  } else {
-    let nuevoProducto = productos.find(
-      (producto) => producto.id === idNuevoProducto
+  $("#boton-carrito").click(() => {
+    dibujarCarrito();
+    $("#aside").animate(
+      {
+        width: "toggle",
+      },
+      500
     );
-    carrito.push(nuevoProducto);
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }
-  $("#carrito").text(" ");
-  finalizarCompra();
-}
+  });
 
-$("#boton-carrito").click(function (e) {
-  $("#aside").animate(
-    {
-      width: "toggle",
-    },
-    500
-  );
+  // Evento del boton agregar
+
+  $(".btn-agr").click((event) => {
+    let idNuevoProducto = parseInt(event.target.id);
+    agregarAlCarrito(idNuevoProducto);
+    dibujarCarrito();
+    dibujarTarjeta(idNuevoProducto);
+  });
 });
 
 dibujarProductos(productos);
-
-$(".btn-agr").click((event) => {
-  let idNuevoProducto = parseInt(event.target.id);
-  agregarAlCarrito(idNuevoProducto);
-  dibujarCarrito();
-  dibujarTarjeta(idNuevoProducto);
-});
