@@ -6,15 +6,12 @@ class Producto {
     this.categoria = categoria;
     this.precioUnidad = precioUnidad;
   }
-
-  getPrecio() {
-    return this.precio;
-  }
 }
 
-let productos = [];
+const productos = [];
 let carrito = [];
-let DOMbutton = document.getElementsByClassName("btn-agr");
+const URLGET =
+  "https://api.mercadolibre.com/sites/MLA/search?q=pc%20componentes&limit=6";
 
 productos.push(
   new Producto(
@@ -85,9 +82,37 @@ function dibujarProductos(productos) {
 
     $("#items").append(section);
   });
+  $("#items").append(
+    `<input id="ver-mas" class="btn btn-mas" type="button" value="VER MAS"/>`
+  );
 }
 
+// Dibuja nuevos productos dinamicamente con datos de la api de Mercadolibre
+
 $(document).ready(function () {
+  $("#ver-mas").click(() => {
+    $.ajax({
+      url: URLGET,
+      success: function (data) {
+        let id = 7;
+        for (let i = 0; i < data.results.length; i++) {
+          productos.push(
+            new Producto(
+              id++,
+              data.results[i].title,
+              data.results[i].thumbnail,
+              data.results[i].domain_id,
+              data.results[i].price
+            )
+          );
+        }
+        $("#items").html("");
+        dibujarProductos(productos);
+        $("#ver-mas").remove();
+      },
+    });
+  });
+
   // Visualiza el carrito dinamicamente dependiendo de que elegiste
 
   function dibujarCarrito() {
@@ -197,12 +222,22 @@ $(document).ready(function () {
 
   // Evento del boton agregar
 
-  $(".btn-agr").click((event) => {
+  $(document).on("click", ".btn-agr", (event) => {
     let idNuevoProducto = parseInt(event.target.id);
     agregarAlCarrito(idNuevoProducto);
     dibujarCarrito();
     dibujarTarjeta(idNuevoProducto);
   });
+});
+
+// Los botones cambian de color al hacerles click
+
+$(document).on("click", ".btn", (event) => {
+  let id = event.target.id;
+  $("#" + id).toggleClass("btn btn-click");
+  setTimeout(() => {
+    $("#" + id).toggleClass("btn-click btn");
+  }, 250);
 });
 
 dibujarProductos(productos);

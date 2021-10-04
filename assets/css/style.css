@@ -64,13 +64,19 @@ main {
       display: flex;
       justify-content: space-around;
       align-items: center; }
+  main .btn-mas {
+    width: 100%; }
   @media only screen and (min-width: 768px) {
     main {
       grid-template-columns: repeat(2, 1fr);
-      column-gap: 1em; } }
+      column-gap: 1em; }
+      main .btn-mas {
+        grid-column: span 2; } }
   @media only screen and (min-width: 992px) {
     main {
-      grid-template-columns: repeat(3, 1fr); } }
+      grid-template-columns: repeat(3, 1fr); }
+      main .btn-mas {
+        grid-column: span 3; } }
 
 aside {
   background-color: #fff;
@@ -99,21 +105,25 @@ aside {
   bottom: 1em;
   width: 25%; }
   .carta section {
-    background-color: white;
+    background-color: #fff;
     display: grid;
     text-align: center;
     width: 100%;
     padding: 1em;
     border-radius: 0.5em; }
 
-.btn {
+.btn, .btn-click {
   color: #fff;
   background-color: #7ed923;
   padding: 0.5em;
   border-radius: 0.5em;
   border: none;
   transition: 500ms; }
-  .btn:hover {
+  .btn:hover, .btn-click:hover {
     color: #0d0d0d;
     background-color: #6bb91d;
-    transform: scale(1.1); }
+    transform: scale(1.05); }
+
+.btn-click:hover {
+  background-color: #1f52e0;
+  color: #fff; }

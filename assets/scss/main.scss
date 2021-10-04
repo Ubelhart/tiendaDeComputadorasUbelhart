@@ -68,12 +68,21 @@ main {
       align-items: center;
     }
   }
+  .btn-mas {
+    width: 100%;
+  }
   @media only screen and (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 1em;
+    .btn-mas {
+      grid-column: span 2;
+    }
   }
   @media only screen and (min-width: 992px) {
     grid-template-columns: repeat(3, 1fr);
+    .btn-mas {
+      grid-column: span 3;
+    }
   }
 }
 aside {
@@ -107,7 +116,7 @@ aside {
   bottom: 1em;
   width: 25%;
   section {
-    background-color: white;
+    background-color: #fff;
     display: grid;
     text-align: center;
     width: 100%;
@@ -126,6 +135,14 @@ aside {
   &:hover {
     color: #0d0d0d;
     background-color: #6bb91d;
-    transform: scale(1.1);
+    transform: scale(1.05);
+  }
+}
+
+.btn-click {
+  @extend .btn;
+  &:hover {
+    background-color: #1f52e0;
+    color: #fff;
   }
 }
