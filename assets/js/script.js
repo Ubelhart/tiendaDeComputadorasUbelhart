@@ -10,6 +10,8 @@ class Producto {
 
 const productos = [];
 let carrito = [];
+let carritoHTML = $("#carrito");
+let carritoFin = $("#carrito-fin");
 const URLGET =
   "https://api.mercadolibre.com/sites/MLA/search?q=pc%20componentes&limit=6";
 
@@ -87,9 +89,44 @@ function dibujarProductos(productos) {
   );
 }
 
-// Dibuja nuevos productos dinamicamente con datos de la api de Mercadolibre
+// Visualiza el carrito dinamicamente dependiendo de que elegiste
+
+function dibujarCarrito(dom) {
+  dom.html("");
+  carrito.forEach((producto) => {
+    let li = document.createElement("li");
+    let { imagen, categoria, nombre, cantidad, precio } = producto;
+    li.innerHTML = `<div>
+                                        <img src="${imagen}" alt="${categoria}">
+                                      </div>
+                                      <div>
+                                        <h3>${nombre}</h3>
+                                        <p>Cantidad: ${cantidad}</p>
+                                        <p>$${precio}</p>
+                                      </div>
+                                      `;
+
+    dom.append(li);
+  });
+  calcularTotal();
+}
+
+// Calcula es precio de todos los productos del carrito
+
+function calcularTotal() {
+  let total = 0;
+  for (let i = 0; i < carrito.length; i++) {
+    total = total + carrito[i].precio;
+    $(".total").text("$" + total);
+    $("#cuota1").text(`1 Cuota de $${total}`);
+    $("#cuota3").text(`3 Cuotas de $${total / 3}`);
+    $("#cuota6").text(`6 Cuotas de $${total / 6}`);
+    $("#cuota12").text(`12 Cuotas de $${total / 12}`);
+  }
+}
 
 $(document).ready(function () {
+  // Dibuja nuevos productos dinamicamente con datos de la api de Mercadolibre
   $("#ver-mas").click(() => {
     $.ajax({
       url: URLGET,
@@ -113,35 +150,12 @@ $(document).ready(function () {
     });
   });
 
-  // Visualiza el carrito dinamicamente dependiendo de que elegiste
-
-  function dibujarCarrito() {
-    let carritoHTML = $("#carrito");
-    carritoHTML.html("");
-    carrito.forEach((producto) => {
-      let section = document.createElement("section");
-      let { imagen, categoria, nombre, cantidad, precio } = producto;
-      section.innerHTML = `<div>
-                                          <img src="${imagen}" alt="${categoria}">
-                                        </div>
-                                        <div>
-                                          <h3>${nombre}</h3>
-                                          <p>Cantidad: ${cantidad}</p>
-                                          <p>$${precio}</p>
-                                        </div>
-                                        `;
-
-      carritoHTML.append(section);
-    });
-    calcularTotal();
-  }
-
   // Visualiza una tarjeta del producto
 
   function dibujarTarjeta(idProducto) {
-    let section = document.createElement("section");
+    let div = document.createElement("div");
     let producto = productos.find((producto) => producto.id === idProducto);
-    section.innerHTML = `<p>HAS AGREGADO</p>
+    div.innerHTML = `<p>HAS AGREGADO</p>
                                       <div>
                                         <img src="${producto.imagen}" alt="${producto.categoria}">
                                       </div>
@@ -152,7 +166,7 @@ $(document).ready(function () {
                                       </div>`;
 
     $("#tarjeta")
-      .html(section)
+      .html(div)
       .fadeIn("slow", function () {
         setTimeout(() => {
           $("#tarjeta").fadeOut();
@@ -184,34 +198,28 @@ $(document).ready(function () {
       carrito.push(nuevoProducto);
     }
     localStorage.setItem("carrito", JSON.stringify(carrito));
-    $("#carrito").text(" ");
-  }
-
-  // Calcula es precio de todos los productos del carrito
-
-  function calcularTotal() {
-    let total = 0;
-    for (let i = 0; i < carrito.length; i++) {
-      total = total + carrito[i].precio;
-      $("#total").text("$" + total);
-    }
+    carritoHTML.text(" ");
   }
 
   // Finaliza la compra una vez apretado el boton Finalizar Compra
 
-  $("#btn-fin").click(() => {
+  $("#btn-fin").click((e) => {
     if (carrito.length > 0) {
+      e.preventDefault();
       localStorage.clear();
       carrito = new Array();
-      $("#carrito").html("<h3>Su Compra se ha Completado Exitosamente</h3>");
-      $("#total").text("$0");
+      carritoFin.html("<h3>Su Compra se ha Completado Exitosamente</h3>");
+      $(".total").text("$0");
+      setTimeout(() => {
+        location.href = "./index.html";
+      }, 1000);
     }
   });
 
   // Hace una animacion cuando apretas el carrito
 
   $("#boton-carrito").click(() => {
-    dibujarCarrito();
+    dibujarCarrito(carritoHTML);
     $("#aside").animate(
       {
         width: "toggle",
@@ -225,7 +233,7 @@ $(document).ready(function () {
   $(document).on("click", ".btn-agr", (event) => {
     let idNuevoProducto = parseInt(event.target.id);
     agregarAlCarrito(idNuevoProducto);
-    dibujarCarrito();
+    dibujarCarrito(carritoHTML);
     dibujarTarjeta(idNuevoProducto);
   });
 });
@@ -241,3 +249,4 @@ $(document).on("click", ".btn", (event) => {
 });
 
 dibujarProductos(productos);
+dibujarCarrito(carritoFin);

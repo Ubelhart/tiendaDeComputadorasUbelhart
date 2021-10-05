@@ -71,6 +71,13 @@ main {
   .btn-mas {
     width: 100%;
   }
+  ul {
+    width: 25%;
+    li {
+      list-style-type: none;
+    }
+  }
+
   @media only screen and (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 1em;
@@ -96,7 +103,7 @@ aside {
   ul {
     display: grid;
     row-gap: 1em;
-    section {
+    li {
       display: flex;
       justify-content: space-around;
       border: 1px solid #0d0d0d;
@@ -107,6 +114,37 @@ aside {
       }
     }
   }
+  a {
+    display: block;
+    width: fit-content;
+    @extend .btn;
+    text-decoration: none;
+  }
+}
+
+.formulario {
+  display: flex;
+  form {
+    display: grid;
+    row-gap: 1em;
+    div {
+      display: grid;
+      width: 100%;
+    }
+    .tarjeta {
+      row-gap: 1em;
+      .tarjeta-fechas {
+        display: flex;
+        justify-content: space-between;
+        div {
+          width: 100%;
+        }
+      }
+    }
+  }
+  p {
+    align-self: flex-end;
+  }
 }
 
 .carta {
@@ -115,7 +153,7 @@ aside {
   right: 1em;
   bottom: 1em;
   width: 25%;
-  section {
+  div {
     background-color: #fff;
     display: grid;
     text-align: center;

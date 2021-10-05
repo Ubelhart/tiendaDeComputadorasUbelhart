@@ -66,6 +66,10 @@ main {
       align-items: center; }
   main .btn-mas {
     width: 100%; }
+  main ul {
+    width: 25%; }
+    main ul li {
+      list-style-type: none; }
   @media only screen and (min-width: 768px) {
     main {
       grid-template-columns: repeat(2, 1fr);
@@ -89,14 +93,36 @@ aside {
   aside ul {
     display: grid;
     row-gap: 1em; }
-    aside ul section {
+    aside ul li {
       display: flex;
       justify-content: space-around;
       border: 1px solid #0d0d0d;
       align-items: center; }
-      aside ul section div {
+      aside ul li div {
         width: 40%;
         text-align: center; }
+  aside a {
+    display: block;
+    width: fit-content;
+    text-decoration: none; }
+
+.formulario {
+  display: flex; }
+  .formulario form {
+    display: grid;
+    row-gap: 1em; }
+    .formulario form div {
+      display: grid;
+      width: 100%; }
+    .formulario form .tarjeta {
+      row-gap: 1em; }
+      .formulario form .tarjeta .tarjeta-fechas {
+        display: flex;
+        justify-content: space-between; }
+        .formulario form .tarjeta .tarjeta-fechas div {
+          width: 100%; }
+  .formulario p {
+    align-self: flex-end; }
 
 .carta {
   display: grid;
@@ -104,7 +130,7 @@ aside {
   right: 1em;
   bottom: 1em;
   width: 25%; }
-  .carta section {
+  .carta div {
     background-color: #fff;
     display: grid;
     text-align: center;
@@ -112,14 +138,14 @@ aside {
     padding: 1em;
     border-radius: 0.5em; }
 
-.btn, .btn-click {
+.btn, aside a, .btn-click {
   color: #fff;
   background-color: #7ed923;
   padding: 0.5em;
   border-radius: 0.5em;
   border: none;
   transition: 500ms; }
-  .btn:hover, .btn-click:hover {
+  .btn:hover, aside a:hover, .btn-click:hover {
     color: #0d0d0d;
     background-color: #6bb91d;
     transform: scale(1.05); }

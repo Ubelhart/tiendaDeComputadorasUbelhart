@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TDC</title>
+    <link rel="stylesheet" href="./assets/css/normalize.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="./index.html"><h1>TDC</h1></a>
+    </header>
+
+    <main class="formulario">
+      <form action="">
+        <div>
+          <label for="name">Nombre</label>
+          <input type="text" id="name" value="Fulano Letal" />
+        </div>
+
+        <div>
+          <label for="email">E-mail</label>
+          <input type="email" id="email" value="fulanoletal@email.com" />
+        </div>
+
+        <div>
+          <label for="tel">Telefono</label>
+          <input type="tel" id="tel" value="341699632" />
+        </div>
+
+        <div>
+          <label for="cuotas">Cantidad de Cuotas</label>
+          <select name="" id="cuotas">
+            <option id="cuota1" value=""></option>
+            <option id="cuota3" value=""></option>
+            <option id="cuota6" value=""></option>
+            <option id="cuota12" value=""></option>
+          </select>
+        </div>
+
+        <div class="tarjeta">
+          <div>
+            <label for="numero-tarjeta">Número de tarjeta</label>
+            <input type="number" id="numero-tarjeta" value="0412000000560969" />
+          </div>
+
+          <div>
+            <label for="nombre-tarjeta">Nombre</label>
+            <input type="text" id="nombre-tarjeta" value="Fulano Letal" />
+          </div>
+
+          <div>
+            <label for="cvc-tarjeta">CVC</label>
+            <input type="number" id="cvc-tarjeta" value="967" />
+          </div>
+
+          <div class="tarjeta-fechas">
+            <div>
+              <label for="desde-tarjeta">Desde</label>
+              <input type="number" name="" id="desde-tarjeta" value="0619" />
+            </div>
+
+            <div>
+              <label for="hasta-tarjeta">Hasta</label>
+              <input type="number" id="hasta-tarjeta" value="0925" />
+            </div>
+          </div>
+
+          <input id="btn-fin" type="submit" class="btn" />
+        </div>
+      </form>
+      <div>
+        <ul id="carrito-fin"></ul>
+      </div>
+      <p>Total: <span class="total">$0</span></p>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./assets/js/script.js"></script>
+  </body>
+</html>
