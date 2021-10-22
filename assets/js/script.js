@@ -85,7 +85,7 @@ function dibujarProductos(productos) {
     $("#items").append(section);
   });
   $("#items").append(
-    `<input id="ver-mas" class="btn btn-mas" type="button" value="VER MAS"/>`
+    `<input id="ver-mas" class="btn btn-ver-mas" type="button" value="VER MAS"/>`
   );
 }
 
@@ -95,16 +95,20 @@ function dibujarCarrito(dom) {
   dom.html("");
   carrito.forEach((producto) => {
     let li = document.createElement("li");
-    let { imagen, categoria, nombre, cantidad, precio } = producto;
-    li.innerHTML = `<div>
-                                        <img src="${imagen}" alt="${categoria}">
-                                      </div>
-                                      <div>
-                                        <h3>${nombre}</h3>
-                                        <p>Cantidad: ${cantidad}</p>
-                                        <p>$${precio}</p>
-                                      </div>
-                                      `;
+    let { id, imagen, categoria, nombre, cantidad, precio } = producto;
+    li.innerHTML = `<h4>${nombre}</h4>
+                              <div>
+                                <img src="${imagen}" alt="${categoria}">
+                              </div>
+                              <div>
+                                <p>Cantidad: ${cantidad}</p>
+                                <p>$${precio}</p>
+                              </div>
+                              <div>
+                                <input id="btn-menos${id}" data-id="${id}" class="btn" type="button" value="-">
+                                <input id="btn-mas${id}" data-id="${id}"class="btn" type="button" value="+">
+                              </div>
+                              `;
 
     dom.append(li);
   });
@@ -176,13 +180,11 @@ $(document).ready(function () {
 
   // Agrega los productos a otro array para mandarlo al local storage
 
-  function agregarAlCarrito(idNuevoProducto) {
-    let existeProducto = carrito.find(
-      (element) => element.id === idNuevoProducto
-    );
+  function agregarAlCarrito(id) {
+    let existeProducto = carrito.find((element) => element.id === id);
     if (existeProducto) {
       carrito = carrito.map((element) => {
-        if (element.id === idNuevoProducto) {
+        if (element.id === id) {
           element.cantidad = element.cantidad + 1;
           element.precio = element.precioUnidad * element.cantidad;
           return element;
@@ -190,9 +192,7 @@ $(document).ready(function () {
         return element;
       });
     } else {
-      let nuevoProducto = productos.find(
-        (element) => element.id === idNuevoProducto
-      );
+      let nuevoProducto = productos.find((element) => element.id === id);
       nuevoProducto.cantidad = 1;
       nuevoProducto.precio = nuevoProducto.precioUnidad;
       carrito.push(nuevoProducto);
@@ -201,14 +201,35 @@ $(document).ready(function () {
     carritoHTML.text(" ");
   }
 
+  function restarAlCarrito(id) {
+    let existeProducto = carrito.find((element) => element.id === id);
+    if (existeProducto) {
+      carrito = carrito.map((element) => {
+        if (element.id === id) {
+          element.cantidad = element.cantidad - 1;
+          element.precio = element.precio - element.precioUnidad;
+          return element;
+        }
+        return element;
+      });
+      carrito = carrito.filter((element) => {
+        return element.cantidad > 0;
+      });
+    }
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    carritoHTML.text(" ");
+  }
+
   // Finaliza la compra una vez apretado el boton Finalizar Compra
 
   $("#btn-fin").click((e) => {
-    if (carrito.length > 0) {
-      e.preventDefault();
+    e.preventDefault();
+    if (carrito.length > 0 && validarFormulario() == true) {
       localStorage.clear();
       carrito = new Array();
-      carritoFin.html("<h3>Su Compra se ha Completado Exitosamente</h3>");
+      carritoFin.html(
+        `<h2 class="exito">Su Compra se ha Completado Exitosamente</h2>`
+      );
       $(".total").text("$0");
       setTimeout(() => {
         location.href = "./index.html";
@@ -231,13 +252,27 @@ $(document).ready(function () {
   // Evento del boton agregar
 
   $(document).on("click", ".btn-agr", (event) => {
-    let idNuevoProducto = parseInt(event.target.id);
-    agregarAlCarrito(idNuevoProducto);
+    let id = parseInt(event.target.id);
+    agregarAlCarrito(id);
     dibujarCarrito(carritoHTML);
-    dibujarTarjeta(idNuevoProducto);
+    dibujarTarjeta(id);
   });
-});
 
+  // Evento para agregar mas cantidad desde el carrito
+
+  function cambiarCantidad(boton, cantidad) {
+    for (let i = 0; i <= 12; i++) {
+      $(document).on("click", `#btn-${boton + i}`, () => {
+        let id = parseInt($(`#btn-${boton + i}`).attr("data-id"));
+        cantidad(id);
+        dibujarCarrito(carritoHTML);
+        dibujarCarrito(carritoFin);
+      });
+    }
+  }
+  cambiarCantidad("mas", agregarAlCarrito);
+  cambiarCantidad("menos", restarAlCarrito);
+});
 // Los botones cambian de color al hacerles click
 
 $(document).on("click", ".btn", (event) => {
@@ -247,6 +282,64 @@ $(document).on("click", ".btn", (event) => {
     $("#" + id).toggleClass("btn-click btn");
   }, 250);
 });
+
+// Valida el formulario para finalizar la compra
+
+function validarFormulario() {
+  $(".error").fadeOut();
+
+  if ($("#name").val() == "") {
+    $("#name").after(`<p class="error">Tiene que escribir su nombre</p>`);
+    $("#name").focus();
+    return false;
+  }
+
+  if ($("#email").val() == "") {
+    $("#email").after(`<p class="error">Tiene que escribir su email</p>`);
+    $("#email").focus();
+    return false;
+  }
+
+  if ($("#tel").val() == "") {
+    $("#tel").after(`<p class="error">Tiene que escribir su telefono</p>`);
+    $("#tel").focus();
+    return false;
+  }
+
+  if ($("#numero-tarjeta").val() == "") {
+    $("#numero-tarjeta").after(
+      `<p class="error">Tiene que escribir su número de tarjeta</p>`
+    );
+    $("#numero-tarjeta").focus();
+    return false;
+  }
+
+  if ($("#nombre-tarjeta").val() == "") {
+    $("#nombre-tarjeta").after(
+      `<p class="error">Tiene que escribir el nombre que aparece en su tarjeta</p>`
+    );
+    $("#nombre-tarjeta").focus();
+    return false;
+  }
+
+  if ($("#cvc-tarjeta").val() == "") {
+    $("#cvc-tarjeta").after(
+      `<p class="error">Tiene que escribir el cvc de su tarjeta</p>`
+    );
+    $("#cvc-tarjeta").focus();
+    return false;
+  }
+
+  if ($("#desde-tarjeta").val() == "" || $("#hasta-tarjeta").val() == "") {
+    $("#tar-fec").after(
+      `<p class="error">Tiene que escribir el desde y hasta de su tarjeta</p>`
+    );
+    $("#desde-tarjeta").focus();
+    return false;
+  }
+
+  return true;
+}
 
 dibujarProductos(productos);
 dibujarCarrito(carritoFin);

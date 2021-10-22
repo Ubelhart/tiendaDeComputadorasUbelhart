@@ -14,7 +14,10 @@ html {
 
 body {
   background-image: url(../../media/img/fondoPlaca.jpg);
-  font-size: 1.6rem; }
+  font-size: 1.6rem;
+  display: grid;
+  justify-items: center;
+  row-gap: 2em; }
 
 img {
   width: 100%; }
@@ -29,6 +32,9 @@ h2 {
 
 h3 {
   font-size: 3rem; }
+
+h4 {
+  font-size: 2.6rem; }
 
 header {
   background-color: #7ed923;
@@ -47,24 +53,21 @@ header {
 
 main {
   background-color: #fff;
-  margin: 1em auto;
   width: 80%;
   border-radius: 1em;
   display: grid;
-  justify-items: center;
+  justify-content: center;
   row-gap: 3em;
-  padding: 2em; }
+  padding: 1.5em; }
   main section {
-    display: grid;
-    justify-content: center;
+    padding: 1em;
     border: 1px solid #0d0d0d;
-    width: 100%;
-    padding: 1em; }
+    width: 100%; }
     main section .price {
       display: flex;
       justify-content: space-around;
       align-items: center; }
-  main .btn-mas {
+  main .btn-ver-mas {
     width: 100%; }
   main ul {
     width: 25%; }
@@ -74,55 +77,74 @@ main {
     main {
       grid-template-columns: repeat(2, 1fr);
       column-gap: 1em; }
-      main .btn-mas {
+      main .btn-ver-mas {
         grid-column: span 2; } }
   @media only screen and (min-width: 992px) {
     main {
       grid-template-columns: repeat(3, 1fr); }
-      main .btn-mas {
+      main .btn-ver-mas {
         grid-column: span 3; } }
 
 aside {
   background-color: #fff;
-  width: 50%;
+  width: 70%;
   padding: 2em;
   display: none;
   position: absolute;
   top: 5em;
   right: 0; }
   aside ul {
-    display: grid;
-    row-gap: 1em; }
+    display: grid; }
     aside ul li {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       justify-content: space-around;
       border: 1px solid #0d0d0d;
-      align-items: center; }
-      aside ul li div {
-        width: 40%;
-        text-align: center; }
+      align-items: center;
+      justify-items: center; }
+      aside ul li h4 {
+        grid-column: 1 / 4; }
   aside a {
     display: block;
     width: fit-content;
     text-decoration: none; }
 
-.formulario {
-  display: flex; }
-  .formulario form {
-    display: grid;
+.carr-fin .btn, .carr-fin aside a, aside .carr-fin a, .carr-fin .btn-click {
+  display: none; }
+
+.formulario div {
+  display: grid;
+  justify-items: center; }
+  .formulario div ul {
+    width: 50%; }
+
+.formulario p {
+  text-align: right;
+  margin-right: 3em; }
+
+.formulario form {
+  display: grid;
+  row-gap: 1em; }
+  .formulario form div input,
+  .formulario form div select {
+    width: 90%; }
+  .formulario form div .error {
+    color: red; }
+  .formulario form .tarjeta {
     row-gap: 1em; }
-    .formulario form div {
-      display: grid;
+    .formulario form .tarjeta div {
       width: 100%; }
-    .formulario form .tarjeta {
-      row-gap: 1em; }
-      .formulario form .tarjeta .tarjeta-fechas {
-        display: flex;
-        justify-content: space-between; }
-        .formulario form .tarjeta .tarjeta-fechas div {
-          width: 100%; }
-  .formulario p {
-    align-self: flex-end; }
+    .formulario form .tarjeta .tarjeta-fechas {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 90%; }
+
+.formulario p {
+  align-self: flex-end; }
+
+.formulario .exito {
+  color: #7ed923; }
 
 .carta {
   display: grid;

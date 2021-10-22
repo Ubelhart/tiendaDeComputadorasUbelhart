@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="./assets/css/normalize.css" />
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
+
   <body>
     <header>
       <a href="./index.html"><h1>TDC</h1></a>
     </header>
 
     <main class="formulario">
-      <form action="">
+      <div>
+        <ul id="carrito-fin" class="carr-fin"></ul>
+      </div>
+      <p>Total: <span class="total">$0</span></p>
+      <form id="form" action="">
         <div>
           <label for="name">Nombre</label>
           <input type="text" id="name" value="Fulano Letal" />
@@ -56,7 +61,7 @@
             <input type="number" id="cvc-tarjeta" value="967" />
           </div>
 
-          <div class="tarjeta-fechas">
+          <div id="tar-fec" class="tarjeta-fechas">
             <div>
               <label for="desde-tarjeta">Desde</label>
               <input type="number" name="" id="desde-tarjeta" value="0619" />
@@ -67,14 +72,9 @@
               <input type="number" id="hasta-tarjeta" value="0925" />
             </div>
           </div>
-
-          <input id="btn-fin" type="submit" class="btn" />
         </div>
+        <input id="btn-fin" type="submit" class="btn" />
       </form>
-      <div>
-        <ul id="carrito-fin"></ul>
-      </div>
-      <p>Total: <span class="total">$0</span></p>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
