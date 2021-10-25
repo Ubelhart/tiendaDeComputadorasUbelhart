@@ -121,12 +121,12 @@ function calcularTotal() {
   let total = 0;
   for (let i = 0; i < carrito.length; i++) {
     total = total + carrito[i].precio;
-    $(".total").text("$" + total);
     $("#cuota1").text(`1 Cuota de $${total}`);
     $("#cuota3").text(`3 Cuotas de $${total / 3}`);
     $("#cuota6").text(`6 Cuotas de $${total / 6}`);
     $("#cuota12").text(`12 Cuotas de $${total / 12}`);
   }
+  $(".total").text("$" + total);
 }
 
 $(document).ready(function () {
@@ -178,15 +178,20 @@ $(document).ready(function () {
       });
   }
 
-  // Agrega los productos a otro array para mandarlo al local storage
+  // Agrega o resta los productos y lo manda al local storage
 
-  function agregarAlCarrito(id) {
+  function cambiarCantidad(id, op, opDos, opTres) {
     let existeProducto = carrito.find((element) => element.id === id);
     if (existeProducto) {
       carrito = carrito.map((element) => {
         if (element.id === id) {
-          element.cantidad = element.cantidad + 1;
-          element.precio = element.precioUnidad * element.cantidad;
+          element.cantidad = op(element.cantidad, 1);
+          element.precio = opDos(
+            element.precioUnidad,
+            element.cantidad,
+            element.precio
+          );
+          element.precio = opTres(element.precio, element.precioUnidad);
           return element;
         }
         return element;
@@ -197,25 +202,7 @@ $(document).ready(function () {
       nuevoProducto.precio = nuevoProducto.precioUnidad;
       carrito.push(nuevoProducto);
     }
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-    carritoHTML.text(" ");
-  }
-
-  function restarAlCarrito(id) {
-    let existeProducto = carrito.find((element) => element.id === id);
-    if (existeProducto) {
-      carrito = carrito.map((element) => {
-        if (element.id === id) {
-          element.cantidad = element.cantidad - 1;
-          element.precio = element.precio - element.precioUnidad;
-          return element;
-        }
-        return element;
-      });
-      carrito = carrito.filter((element) => {
-        return element.cantidad > 0;
-      });
-    }
+    carrito = carrito.filter((element) => element.cantidad > 0);
     localStorage.setItem("carrito", JSON.stringify(carrito));
     carritoHTML.text(" ");
   }
@@ -253,25 +240,42 @@ $(document).ready(function () {
 
   $(document).on("click", ".btn-agr", (event) => {
     let id = parseInt(event.target.id);
-    agregarAlCarrito(id);
+    cambiarCantidad(
+      id,
+      (a, b) => a + b,
+      (a, b) => a * b,
+      (a) => a
+    );
     dibujarCarrito(carritoHTML);
     dibujarTarjeta(id);
   });
 
   // Evento para agregar mas cantidad desde el carrito
 
-  function cambiarCantidad(boton, cantidad) {
+  function eventoCambiarCantidad(boton, cantidad, op, opDos, opTres) {
     for (let i = 0; i <= 12; i++) {
       $(document).on("click", `#btn-${boton + i}`, () => {
         let id = parseInt($(`#btn-${boton + i}`).attr("data-id"));
-        cantidad(id);
+        cantidad(id, op, opDos, opTres);
         dibujarCarrito(carritoHTML);
         dibujarCarrito(carritoFin);
       });
     }
   }
-  cambiarCantidad("mas", agregarAlCarrito);
-  cambiarCantidad("menos", restarAlCarrito);
+  eventoCambiarCantidad(
+    "mas",
+    cambiarCantidad,
+    (a, b) => a + b,
+    (a, b) => a * b,
+    (a) => a
+  );
+  eventoCambiarCantidad(
+    "menos",
+    cambiarCantidad,
+    (a, b) => a - b,
+    (a, b, c) => c,
+    (a, b) => a - b
+  );
 });
 // Los botones cambian de color al hacerles click
 
